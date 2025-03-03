@@ -1,0 +1,23 @@
+FROM golang:1.24-alpine as builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+
+RUN go build -o total-service
+
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/total-service .
+
+EXPOSE 50051
+
+CMD ["./total-service"]

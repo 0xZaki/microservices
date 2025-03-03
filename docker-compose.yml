@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   rabbitmq:
@@ -19,14 +19,11 @@ services:
     networks:
       - app-network
 
-  app:
+  calc_app:
     build:
       context: ./calc_service
     environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -35,9 +32,20 @@ services:
     networks:
       - app-network
 
-networks:
-  app-network:
-    driver: bridge
+  total_app:
+    build:
+      context: ./total_service
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
 
 volumes:
   rabbitmq_data:
+  
+networks:
+  app-network:
+    driver: bridge

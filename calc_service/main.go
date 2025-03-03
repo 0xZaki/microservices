@@ -68,7 +68,11 @@ func (s *server) Sum(ctx context.Context, req *pb.SumRequest) (*pb.SumResponse, 
 
 // connect to rabbitmq 
 func connectToRabbitMQ() (*amqp.Connection, *amqp.Channel, error) {
-	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
+	rabbitMQURL := os.Getenv("RABBITMQ_URL")
+	if rabbitMQURL == "" {
+		rabbitMQURL = "amqp://guest:guest@localhost:5672/"
+	}
+	conn, err := amqp.Dial(rabbitMQURL)
 	if err != nil {
 		return nil, nil, err
 	}
