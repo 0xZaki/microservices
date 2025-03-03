@@ -86,7 +86,7 @@ func connectToRabbitMQ() (*amqp.Connection, *amqp.Channel, error) {
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "50051"
+		port = "8080"
 	}
 
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
@@ -97,7 +97,7 @@ func main() {
 	// connect to rabbitmq
 	conn, ch, err := connectToRabbitMQ()
 	if err != nil {
-		log.Printf("failed to connect to rabbitmq: %v", err)
+		log.Fatalf("failed xd to connect to rabbitmq: %v", err)
 	} else {
 		log.Printf("connected to rabbitmq")
 		defer conn.Close()
